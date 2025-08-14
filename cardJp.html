@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Flashcard</title>
+<style>
+    body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 20px;
+        background: #f2f2f2;
+    }
+    .card {
+        width: 200px;
+        height: 300px;
+        perspective: 1000px;
+        margin: 20px auto;
+        cursor: pointer;
+    }
+    .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+    .card.flip .card-inner {
+        transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        border:1px solid #0866FB;
+    }
+    .card-back {
+        transform: rotateY(180deg);
+        
+    }
+    button {
+        margin: 10px;
+        padding: 10px 15px;
+        font-size: 16px;
+        background: #fff;
+        border-radius: 10px;
+        backface-visibility: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border: 1px solid #fff;
+    }
+    button.active{
+        color: #0866FB;
+        border:1px solid #0866FB;
+    }
+    .card-back{
+        flex-direction: column;
+    }
+    p{
+        margin: 0;
+    }
+</style>
+</head>
+<body>
+<div class="listbai">
+    <p>Chọn bài muốn học</p>
+    <div class="listbaihoc">
+        <div class="baihoc">
+            <button >Bài 1</button>
+            <button>Bài 2</button>
+            <button>Bài 3</button>
+            <button>Bài 4</button>
+            <button>Bài 5</button>
+            <button>Bài 6</button>
+            <button>Bài 7</button>
+            <button>Bài 8</button>
+            <button>Bài 9</button>
+            <button>Bài 10</button>
+            <button>Bài 11</button>
+            <button>Bài 12</button>
+            <button>Bài 13</button>
+            <button>Bài 14</button>
+            <button>Bài 15</button>
+            <button>Bài 16</button>
+            <button>Bài 17</button>
+            <button>Bài 18</button>
+            <button>Bài 19</button>
+            <button>Bài 20</button>
+            <button>Bài 21</button>
+            <button>Bài 22</button>
+            <button>Bài 23</button>
+            <button>Bài 24</button>
+            <button>Bài 25</button>
+            <button>Bài 26</button>
+            <button>Bài 27</button>
+            <button>Bài 28</button>
+            <button>Bài 29</button>
+            <button>Bài 30</button>
+            <button>Bài 31</button>
+            <button>Bài 32</button>
+            <button>Bài 33</button>
+            <button>Bài 34</button>
+            <button>Bài 35</button>
+            <button>Khó</button>
+        </div>
+        <div class="batdau">
+            <button>Bắc đầu</button>
+        </div>
+    </div>
+</div>
+<h1>Học Từ Vựng</h1>
+<div id="flashcard" class="card">
+    <div class="card-inner">
+        <div class="card-front"></div>
+        <div class="card-back">
+            <p class="hira"></p><br>
+            <p class="vietnam"></p>
+        </div>
+    </div>
+</div>
+<div>
+    <input type="checkbox" id="noRemember" name="noRemember" value="noRemember">
+    <label for="noRemember"> chưa thuộc</label>
+</div>
+<div>
+    <button id="prevBtn">← Trước</button>
+    <button id="shuffleBtn">🔀 Trộn</button>
+    <button id="nextBtn">Tiếp →</button>
+</div>
+
+<script>
+    const cards = [
+        {lesson:1, front: "穴", back: "あな" ,vi:"cái lỗ, cái hang"},
+        {lesson:1, front: "油", back: "あぶら", vi:"dầu, mỡ" },
+        {lesson:1, front: "胃", back: "い" , vi:"dạ dày"},
+        {lesson:1, front: "息", back: "いき" , vi:"hơi thở"},
+        {lesson:1, front: "裏", back: "うら", vi:"mặt sau, mặt trái"},
+        {lesson:1, front: "噂", back: "うわさ", vi:"lời đồn, tin đồn" },
+        {lesson:1, front: "餌", back: "えさ", vi:"mồi, thức ăn cho động vật" },
+        {lesson:1, front: "枝", back: "えだ" , vi:"cành cây, nhánh"},
+        {lesson:1, front: "襟", back: "えり", vi:"cổ áo" },
+        {lesson:1, front: "奥", back: "おく" , vi:"trong cùng"},
+        {lesson:1, front: "親", back: "おや" , vi:"cha mẹ"},
+        {lesson:1, front: "課", back: "か", vi:"bài học/ khoa, phòng ban" },
+        {lesson:1, front: "数", back: "すう" , vi:"số lượng"},
+        {lesson:1, front: "形", back: "かたち" , vi:"hình dáng, kiểu"},
+        {lesson:1, front: "壁", back: "かべ" , vi:"bức tường"},
+        {lesson:1, front: "雷", back: "かみなり", vi:"sấm sét" },
+        {lesson:1, front: "皮", back: "かわ", vi:"vỏ( trái cây)/ da thú" },
+        {lesson:1, front: "缶", back: "かん", vi:"lon" },
+        {lesson:1, front: "曲", back: "きょく", vi:"khúc nhạc" },
+        {lesson:1, front: "雲", back: "くも", vi:"mây" },
+        {lesson:1, front: "煙", back: "けむり" , vi:"khói"},
+        {lesson:1, front: "塩", back: "しお" , vi:"muối"},
+        {lesson:1, front: "島", back: "しま" , vi:"đảo"},
+        {lesson:1, front: "城", back: "しろ", vi:"lâu đài, thành" },
+        {lesson:1, front: "隅", back: "すみ" , vi:"góc ( góc đường, góc phòng)"},
+        {lesson:1, front: "咳", back: "せき", vi:"ho" },
+        {lesson:1, front: "底", back: "そこ", vi:"đáy, đế" },
+        {lesson:1, front: "像", back: "ぞう", vi:"bức tượng" },
+        {lesson:1, front: "旅", back: "たび", vi:"chuyến đi, hành trình" },
+        {lesson:1, front: "妻", back: "つま" , vi:"vợ"},
+        {lesson:1, front: "毒", back: "どく" , vi:"độc"},
+        {lesson:1, front: "謎", back: "なぞ" , vi:"điều bí ẩn"},
+        {lesson:1, front: "鍋", back: "なべ" , vi:"nồi/ món lẩu"},
+        {lesson:1, front: "波", back: "なみ" , vi:"sóng"},
+        {lesson:1, front: "涙", back: "なみだ", vi:"nước mắt" },
+        {lesson:1, front: "庭", back: "にわ" , vi:"vườn"},
+        {lesson:1, front: "熱", back: "ねつ", vi:"nhiệt/ sốt" },
+        {lesson:1, front: "橋", back: "はし", vi:"đũa" },
+        {lesson:1, front: "畑", back: "はたけ" , vi:"ruộng nương( trồng hoa màu)"},
+        {lesson:1, front: "羽", back: "はね" , vi:"cánh"},
+        {lesson:1, front: "幅", back: "はば", vi:"chiều rộng, chiều ngang" },
+        {lesson:1, front: "膝", back: "ひざ" , vi:"đầu gối"},
+        {lesson:1, front: "袋", back: "ふくろ", vi:"túi, bao" },
+        {lesson:1, front: "骨", back: "ほね", vi:"xương" },
+        {lesson:1, front: "骨", back: "棒", vi:"gậy" },
+        {lesson:1, front: "孫", back: "まご" , vi:"cháu"},
+        {lesson:1, front: "街", back: "まち" , vi:"khu phố"},
+        {lesson:1, front: "湖", back: "みずうみ" , vi:"hồ"},
+        {lesson:1, front: "娘", back: "むすめ", vi:"con gái" },
+        {lesson:1, front: "胸", back: "むね", vi:"ngực" },
+        {lesson:1, front: "床", back: "ゆか", vi:"sàn" },
+        {lesson:1, front: "夢", back: "やめ", vi:"giấc mơ" },
+        {lesson:1, front: "寮", back: "りょう", vi:"ký túc xá" },
+        {lesson:1, front: "量", back: "りょう" , vi:"khối lượng"},
+        {lesson:1, front: "列", back: "れつ", vi:"hàng, dòng" },
+        {lesson:1, front: "合図", back: "あいず", vi:"dấu hiệu, hiệu lệnh" },
+        {lesson:1, front: "青空", back: "あおぞら" , vi:"trời xanh"},
+        {lesson:1, front: "以外", back: "いがい", vi:"ngoài ra, ngoại trừ" },
+        {lesson:1, front: "以後", back: "いご", vi:"từ sau khi, từ sau đó ( cảm nhận)" },
+        {lesson:1, front: "以降", back: "いこう" , vi:"từ sau... ( thời gian cụ thể)"},
+        {lesson:1, front: "維持", back: "いじ" , vi:"duy trì"},
+        {lesson:1, front: "意識", back: "いしき" , vi:"ý thức, nhận thức"},
+        {lesson:1, front: "以前", back: "いぜん", vi:"trước đây, ngày trước, lúc trước..." },
+        {lesson:1, front: "位置", back: "いち", vi:"vị trí" },
+        {lesson:1, front: "一流", back: "いちりゅう", vi:"bậc nhất, hàng đầu" },
+        {lesson:1, front: "一般", back: "いっぱん" , vi:"thông thường, bình thường"},
+        {lesson:1, front: "移動", back: "いどう" , vi:"di chuyển, chuyển động"},
+        {lesson:1, front: "以内", back: "いない", vi:"trong vòng, trong phạm vi" },
+        {lesson:1, front: "田舎", back: "いなか", vi:"nông thôn, ngoại thành, quê" },
+        {lesson:1, front: "印刷", back: "いんさつ" , vi:"in ấn"},
+        {lesson:1, front: "印象", back: "いんしょう", vi:"ấn tượng" },
+        {lesson:1, front: "飲料", back: "いんりょう" , vi:"đồ uống"},
+        {lesson:1, front: "内側", back: "うちがわ" , vi:"bên trong, phía trong"},
+        {lesson:1, front: "宇宙", back: "うちゅう", vi:"vũ trụ" },
+        {lesson:1, front: "影響", back: "えいきょう" , vi:"ảnh hưởng, tác động"},
+        {lesson:1, front: "営業", back: "えいぎょう" , vi:"kinh doanh, quản lý vạn hành doanh nghiệp"},
+        {lesson:1, front: "栄養", back: "えいよう", vi:"dinh dưỡng" },
+        {lesson:1, front: "笑顔", back: "えがお", vi:"khuôn mặt tươi cười" },
+        {lesson:1, front: "延期", back: "えんき", vi:"trì hoãn, hoãn" },
+        {lesson:1, front: "演奏", back: "えんそう" , vi:"biểu diễn, trình diễn"},
+        {lesson:1, front: "遠慮", back: "えんりょ" , vi:"khách khí, ngại ngần"},
+        {lesson:1, front: "往復", back: "おうふく", vi:"khứ hồi, cả đi cả về" },
+        {lesson:1, front: "応募", back: "おうぼ", vi:"ứng tuyển, đăng ký" },
+        {lesson:1, front: "応用", back: "おうよう" , vi:"ứng dụng"},
+        {lesson:1, front: "大勢", back: "おおぜい", vi:"đại chúng, đám đông, phần lớn mọi người" },
+        {lesson:1, front: "親子", back: "おやこ", vi:"cha mẹ và con cái" },
+        {lesson:1, front: "温泉", back: "おんせん" , vi:"suối nước nóng"},
+        {lesson:1, front: "会員", back: "かいいん" , vi:"hội viên"},
+        {lesson:1, front: "絵画", back: "かいが" , vi:"bức tranh, bức họa"},
+        {lesson:1, front: "会議", back: "かいぎ" , vi:"cuộc họp, hội nghị"},
+        {lesson:1, front: "会計", back: "かいけい" , vi:"kế toán, tính tiền"},
+        {lesson:1, front: "解決", back: "かいけつ" , vi:"giải quyết"},
+        {lesson:1, front: "回収", back: "かいしゅ" , vi:"thu hồi, thu lại"},
+        {lesson:1, front: "開始", back: "かいし" , vi:"khởi đầu, bắt đầu"},
+        {lesson:1, front: "開場", back: "かいじょう" , vi:"mở cửa, khai mạc"},
+        {lesson:1, front: "回数", back: "かいすう", vi:"số lần, số lượt" },
+        {lesson:1, front: "解説", back: "かいせつ", vi:"giải thích, diễn giải, chú giải" },
+        {lesson:1, front: "階段", back: "かいだん", vi:"cầu thang" },
+        {lesson:1, front: "開店", back: "かいてん" , vi:"mở cửa hàng"},
+        {lesson:1, front: "価格", back: "かかく", vi:"giá cả, giá tiền, giá trị" },
+        //+++++++++++++++++++++++++ bài 2 ++++++++++++++++++++++++++++++++++++++
+        {lesson:2, front: "各地", back: "かくち", vi:"các nơi, các địa phương" },
+        {lesson:2, front: "確認", back: "かくにん", vi:"xác nhận, kiểm tra lại" },
+        {lesson:2, front: "過去", back: "かこ", vi:"quá khứ" },
+        {lesson:2, front: "火災", back: "かさい", vi:"hỏa hoạn" },
+        {lesson:2, front: "花壇", back: "かだん", vi:"bồn hoa" },
+        {lesson:2, front: "価値", back: "かち", vi:"giá trị" },
+        {lesson:2, front: "課長", back: "かちょう", vi:"trưởng phòng, ban phòng" },
+        {lesson:2, front: "各国", back: "かっこく", vi:"các nước, các quốc gia" },
+        {lesson:2, front: "活動", back: "かつどう", vi:"sự hoạt động, hoạt động" },
+        {lesson:2, front: "家庭", back: "かてい", vi:"gia đình" },
+        {lesson:2, front: "花瓶", back: "かびん", vi:"bình hoa, lo hoa" },
+        {lesson:2, front: "髪型", back: "かみがた", vi:"kiểu tóc" },
+        {lesson:2, front: "観客", back: "かんきゃく", vi:"quan khách, người xem, khán giả" },
+        {lesson:2, front: "環境", back: "かんきょう", vi:"môi trường, hoàn cảnh" },
+        {lesson:2, front: "関係", back: "かんけい", vi:"quan hệ, liên quan" },
+        {lesson:2, front: "歓迎", back: "かんげい", vi:"hoan nghênh, tiếp đón" },
+        {lesson:2, front: "観光", back: "かんこう", vi:"tham quan, du lịch" },
+        {lesson:2, front: "感激", back: "かんげき", vi:"cảm động, cảm kích" },
+        {lesson:2, front: "看護", back: "かんご", vi:"hộ lí, chăm sóc người bệnh" },
+        {lesson:2, front: "観察", back: "かんさつ", vi:"quan sát, theo dõi" },
+        {lesson:2, front: "感謝", back: "かんしゃ", vi:"cảm tạ, biết ơn" },
+        {lesson:2, front: "感心", back: "かんしん", vi:"khâm phục, ngưỡng môk" },
+        {lesson:2, front: "関心", back: "かんしん", vi:"quan tâm" },
+        {lesson:2, front: "完成", back: "かんせい", vi:"hoàn thành" },
+        {lesson:2, front: "乾燥", back: "かんそう", vi:"khôn khan, khô hạn, làm khô" },
+        {lesson:2, front: "感想", back: "かんそう", vi:"cảm tưởng" },
+        {lesson:2, front: "感動", back: "かんどう", vi:"cảm động, cảm xúc" },
+        {lesson:2, front: "館内", back: "かんない", vi:"trong tòa nhà" },
+        {lesson:2, front: "外出", back: "がいしゅつ", vi:"đi ra ngoài" },
+        {lesson:2, front: "外食", back: "がいしょく", vi:"ăn ở ngoài, ăn ngoài tiệm" },
+        {lesson:2, front: "画家", back: "がか", vi:"họa sĩ" },
+        {lesson:2, front: "学部", back: "がくぶ", vi:"khoa, ngành" },
+        {lesson:2, front: "楽器", back: "がっき", vi:"nhạc cụ" },
+        {lesson:2, front: "学期", back: "がっき", vi:"học kỳ" },
+        {lesson:2, front: "我慢", back: "がまん", vi:"chịu đựng, nhẫn nại, kìm nén" },
+        {lesson:2, front: "気温", back: "きおん", vi:"nhiệt độ" },
+        {lesson:2, front: "機械", back: "きかい", vi:"máy móc" },
+        {lesson:2, front: "期間", back: "きかん", vi:"giai đoạn, thời kì" },
+        {lesson:2, front: "企業", back: "きぎょう", vi:"xí nghiệp, doanh nghiệp" },
+        {lesson:2, front: "期限", back: "きげん", vi:"hạn, kỳ hạn, thời kỳ" },
+        {lesson:2, front: "帰国", back: "きこく", vi:"về nước, về tổ quốc" },
+        {lesson:2, front: "記事", back: "きじ", vi:"bài báo, kí sự, tín tức báo chí" },
+        {lesson:2, front: "基礎", back: "きそ", vi:"nền, nền móng, cơ sở, nền tảng" },
+        {lesson:2, front: "規則", back: "きそく", vi:"quy tắc, nội quy, kỷ luật" },
+        {lesson:2, front: "期待", back: "きたい", vi:"kì vọng, hi vọng" },
+        {lesson:2, front: "北側", back: "きたがわ", vi:"phí bắc, bờ bắc" },
+        {lesson:2, front: "帰宅", back: "きたく", vi:"về nahf" },
+        {lesson:2, front: "切符", back: "きっぷ", vi:"vé" },
+        {lesson:2, front: "記念", back: "きねん", vi:"kỉ niệm" },
+        {lesson:2, front: "基本", back: "きほん", vi:"cơ bản" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+        // {lesson:2, front: "", back: "", vi:"" },
+    ];
+
+    let selectedLessons = []; 
+    let filteredCards = [];
+    let hardCards = [];
+    let currentIndex = 0;
+
+    const flashcard = document.getElementById('flashcard');
+    const frontEl = flashcard.querySelector('.card-front');
+    const hira = flashcard.querySelector('.hira');
+    const vietnam = flashcard.querySelector('.vietnam');
+    const checkbox = document.getElementById('noRemember');
+
+    function renderCard(index) {
+        if (!filteredCards.length) {
+            frontEl.textContent = "";
+            hira.textContent = "";
+            vietnam.textContent = "";
+            return;
+        }
+        flashcard.classList.remove('flip');
+        frontEl.textContent = filteredCards[index].front;
+        hira.textContent = filteredCards[index].back;
+        vietnam.textContent = filteredCards[index].vi;
+
+        // đồng bộ trạng thái checkbox
+        checkbox.checked = hardCards.some(
+            c => c.front === filteredCards[index].front && c.back === filteredCards[index].back
+        );
+    }
+
+    // chọn bài
+    document.querySelectorAll('.baihoc button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.textContent.trim();
+
+            if (text === 'Khó') {
+                btn.classList.toggle('active');
+                if (btn.classList.contains('active')) {
+                    selectedLessons.push('hard');
+                } else {
+                    selectedLessons = selectedLessons.filter(l => l !== 'hard');
+                }
+            } else {
+                const lessonNumber = parseInt(text.replace('Bài ', ''));
+                btn.classList.toggle('active');
+                if (btn.classList.contains('active')) {
+                    selectedLessons.push(lessonNumber);
+                } else {
+                    selectedLessons = selectedLessons.filter(l => l !== lessonNumber);
+                }
+            }
+        });
+    });
+
+    // bắt đầu
+    document.querySelector('.batdau button').addEventListener('click', () => {
+        if (selectedLessons.length === 0) {
+            alert("Vui lòng chọn ít nhất 1 bài để học!");
+            return;
+        }
+
+        if (selectedLessons.length === 1 && selectedLessons.includes('hard')) {
+            filteredCards = hardCards.slice();
+        } else if (selectedLessons.includes('hard')) {
+            const lessonsOnly = selectedLessons.filter(l => l !== 'hard');
+            filteredCards = cards.filter(c => lessonsOnly.includes(c.lesson));
+            filteredCards = [...filteredCards, ...hardCards];
+        } else {
+            filteredCards = cards.filter(c => selectedLessons.includes(c.lesson));
+        }
+
+        currentIndex = 0;
+        renderCard(currentIndex);
+    });
+
+    // lật thẻ
+    flashcard.addEventListener('click', () => {
+        if (filteredCards.length) {
+            flashcard.classList.toggle('flip');
+        }
+    });
+
+    // checkbox chưa thuộc
+    checkbox.addEventListener('change', function() {
+        if (!filteredCards.length) return;
+        const currentCard = filteredCards[currentIndex];
+        if (this.checked) {
+            if (!hardCards.some(c => c.front === currentCard.front && c.back === currentCard.back)) {
+                hardCards.push(currentCard);
+            }
+        } else {
+            hardCards = hardCards.filter(c => !(c.front === currentCard.front && c.back === currentCard.back));
+        }
+    });
+
+    // điều khiển
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        if (!filteredCards.length) return;
+        currentIndex = (currentIndex + 1) % filteredCards.length;
+        renderCard(currentIndex);
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        if (!filteredCards.length) return;
+        currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+        renderCard(currentIndex);
+    });
+
+    document.getElementById('shuffleBtn').addEventListener('click', () => {
+        if (!filteredCards.length) return;
+
+        for (let round = 0; round < 3; round++) { // trộn 3 vòng
+            for (let i = filteredCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [filteredCards[i], filteredCards[j]] = [filteredCards[j], filteredCards[i]];
+            }
+        }
+
+        currentIndex = 0;
+        renderCard(currentIndex);
+    });
+
+
+    renderCard(currentIndex);
+</script>
+
+</body>
+</html>
